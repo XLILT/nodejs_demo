@@ -49,17 +49,7 @@ class VideojsVideo extends Component {
 
     var options = {};
 
-    var player = window.videojs(this.props.id, options, function onPlayerReady() {
-      window.videojs.log('Your player is ready!');
-
-      // In this context, `this` is the player that was created by Video.js.
-      //this.play();
-
-      // How about an event listener?
-      this.on('ended', function() {
-        window.videojs.log('Awww...over so soon?!');
-      });
-    });
+    var player = window.videojs(this.props.id, options);
   }
 
   render() {
@@ -67,7 +57,7 @@ class VideojsVideo extends Component {
       <video id={this.props.id}
           className="video-js vjs-fluid"
           controls
-          preload="auto"
+          autoPlay
           poster="//192.168.0.88:3000/img/u=1259008651,161387334&fm=27&gp=0.jpg"
           data-setup='{}'>
         <source src={this.props.src} type={this.props.type}></source>
@@ -86,9 +76,10 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>        
         </header>        
         <FlvVideo id="videoElement"/>        
-       <H5Video src="http://192.168.0.88:3000/video/阳光电影www.ygdy8.com.二十二.HD.1080p.国语中英双字.mp4" />
-       */}
-        <VideojsVideo id="my-player" src="http://192.168.0.88:3000/video/阳光电影www.ygdy8.com.二十二.HD.1080p.国语中英双字.mp4" type="video/mp4" />
+        <H5Video src="http://192.168.0.88:3000/video/阳光电影www.ygdy8.com.二十二.HD.1080p.国语中英双字.mp4" />
+        <VideojsVideo id="my-player" src="http://192.168.0.88:3000/video/阳光电影www.ygdy8.net.灵魂摆渡黄泉.HD.720p.国语中字.mp4" type="video/mp4" />                
+       <VideojsVideo id="my-player" src="http://192.168.0.88:3000/video/阳光电影www.ygdy8.com.二十二.HD.1080p.国语中英双字.mp4" type="video/mp4" />
+        */}                                       
       </div>      
     );
   }
