@@ -1,32 +1,23 @@
 'use strict';
-
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
   entry: {
-     app: './src/index.js'
+    app: './src/index.js'
   },
-  devtool: 'inline-source-map',
-  devServer: {
-    contentBase: './dist',
-    hot: true
-  },  
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
-      title: 'Output Management'
+      title: 'Production'
     }),
-    new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin()    
+    new webpack.HashedModuleIdsPlugin()
   ],
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name].bundle.js',
-    publicPath: '/'
+    filename: '[name].[chunkhash].js',
+    path: path.resolve(__dirname, 'dist')
   },
   module: {
     rules: [
@@ -62,5 +53,5 @@ module.exports = {
         ]
       }
     ]
-  }
+  }  
 };
