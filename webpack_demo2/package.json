@@ -1,0 +1,19 @@
+{
+  "name": "webpack_demo2",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "node development.js"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    "opn": "^5.3.0",
+    "webpack": "^4.7.0",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-merge": "^4.1.2"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}
