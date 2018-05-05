@@ -2,7 +2,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
-//const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -11,17 +11,16 @@ module.exports = {
     app: './src/index.js'
   },
   plugins: [
-    //new CleanWebpackPlugin(['dist']),
+    new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './src/index.html'
-    })
-    //new webpack.HashedModuleIdsPlugin()
+    }),
+    new webpack.HashedModuleIdsPlugin()
   ],
   output: {
-    //filename: '[name].[chunkhash].js',
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, './dist')
+    filename: '[name].[chunkhash].js',    
+    path: path.resolve(__dirname, '../dist')
   },
   module: {
     rules: [
