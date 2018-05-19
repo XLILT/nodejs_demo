@@ -1,0 +1,19 @@
+{
+  "name": "session-demo",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "connect-redis": "^3.3.3",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6"
+  },
+  "devDependencies": {
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "nodemon": "^1.17.4"
+  }
+}
