@@ -22,16 +22,16 @@ module.exports = merge(common, {
     },
     splitChunks: {      
       cacheGroups: {
-        // commons: {
-        //   name: "commons",
-        //   chunks: "initial",
-        //   minChunks: 2
-        // }
-        lodash: {
-          test: /[\\/]node_modules[\\/]lodash/,
-          name: "lodash",
-          chunks: "all"
+        commons: {
+          name: "commons",
+          chunks: "initial",
+          minChunks: 2
         }
+        // lodash: {
+        //   test: /[\\/]node_modules[\\/]lodash/,
+        //   name: "lodash",
+        //   chunks: "all"
+        // }
       }
     }
   }

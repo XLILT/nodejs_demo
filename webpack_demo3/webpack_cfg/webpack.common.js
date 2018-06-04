@@ -8,8 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   context: path.resolve(__dirname, "../"),
   entry: {
-    app: './src/index.js',
-    another: './src/another.js'
+    app: './src/index.js'
   },
   plugins: [
     new CleanWebpackPlugin(['dist'], {
@@ -19,7 +18,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './src/index.html',
-      chunks : ['manifest', 'lodash', 'app', 'another'],
+      chunks : ['manifest', 'commons', 'app'],
       date : new Date()
     }),
     new webpack.HashedModuleIdsPlugin()
