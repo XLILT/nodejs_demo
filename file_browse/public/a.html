@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>a</title>
+    <style type="text/css" media="screen">
+        @media screen and (orientation: portrait) {
+            body {
+                -webkit-transform:rotate(90deg);
+                -moz-transform: rotate(90deg);
+                -ms-transform: rotate(90deg);
+                transform: rotate(90deg);                
+            }
+
+            img {
+                width: 85vh;
+                height: 101vw;
+            }
+        }
+
+        @media screen and (orientation: landscape) {
+            body {
+                -webkit-transform:rotate(0);
+                -moz-transform: rotate(0);
+                -ms-transform: rotate(0);
+                transform: rotate(0)
+            }
+
+            img {
+                width: 99vw;
+                height: 99vh;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0
+        }
+    </style>
+</head>
+<body>
+    <!--div style="max-width: 1920px; max-height: 1280px;">
+        <img src="images/1.jpg" alt="this is alt">    
+    </div-->    
+    <img src="images/1.jpg" alt="this is alt">
+</body>
+</html>
