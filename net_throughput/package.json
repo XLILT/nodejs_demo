@@ -1,0 +1,10 @@
+{
+  "name": "net_throughput",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {    
+    "server": "node server.js",
+    "client": "node client.js"
+  },
+}
