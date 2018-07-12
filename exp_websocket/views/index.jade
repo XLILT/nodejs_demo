@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  script.
+    var ws = new WebSocket("ws://localhost:3001", "echo-protocol");
+
+    ws.onopen = function() {  
+        console.log("open");
+        ws.send("hello");
+    };
+
+    ws.onmessage = function(evt) {
+        console.log(evt.data)
+    };
+
+    ws.onclose = function(evt) {
+        console.log("WebSocketClosed!");
+    };
+
+    ws.onerror = function(evt) {
+        console.log("WebSocketError!");
+    };

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>test websocket</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <<script type="text/javascript" charset="utf-8">
+          var ws = new WebSocket('ws://localhost:3001/ws');
+
+          ws.onmessage=function(e){
+            console.log('_message');  
+            console.log(e.data);  
+          };  
+          ws.onerror=function(err){  
+            console.log('_error');  
+            console.log(err);  
+          };  
+          ws.onopen=function(){  
+            console.log('_connect')  
+
+            //ws.send('data')
+          };  
+          ws.onclose=function(){  
+            console.log('_close');  
+          };
+
+    </script>
+</body>
+</html>
