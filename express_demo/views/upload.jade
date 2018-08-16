@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  h1= title  
+  form(method="post", action="/upload", enctype="multipart/form-data")
+    input(type="checkbox", name="cb", checked="checked")
+    input(type="file", name="filename")
+    input(type="submit", value="上传")
+    

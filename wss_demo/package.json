@@ -1,0 +1,12 @@
+{
+  "name": "wss_demo",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ws": "^6.0.0"
+  }
+}
