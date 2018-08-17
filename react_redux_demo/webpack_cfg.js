@@ -6,27 +6,26 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  context: path.resolve(__dirname, "../"),
+  context: path.resolve(__dirname),
   entry: {
-    app: './src/index.js'
+    app: './index.js'
   },
   plugins: [
     new CleanWebpackPlugin(['dist'], {
-      root: path.resolve(__dirname, "../"),
+      root: path.resolve(__dirname),
       verbose: true
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './src/index.html',
-      chunks : ['manifest', 'commons', 'app'],
+      //template: './src/index.html',
+      chunks : ['app'],
       date : new Date()
     }),
-    new webpack.HashedModuleIdsPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HashedModuleIdsPlugin()
   ],
   output: {
-    filename: '[name].[chunkhash:8].js',
-    path: path.resolve(__dirname, '../dist')
+    filename: '[name].[hash:8].js',
+    path: path.resolve(__dirname, './dist')
   },
   module: {
     rules: [
@@ -80,9 +79,18 @@ module.exports = {
   },
   resolve: {    
     modules: [
-      path.resolve(__dirname, "../node_modules"),
-      path.resolve(__dirname, "../src")
+      path.resolve(__dirname, "./node_modules"),
+      path.resolve(__dirname)
     ],    
     extensions: [".js", ".json", ".jsx", ".css"]
+  },
+  mode: 'development',
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist',
+    host: "localhost",
+    port: 8088,
+    hot: true,
+    open: true    
   }
 };
