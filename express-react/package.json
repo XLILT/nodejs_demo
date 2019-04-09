@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "start": "node development.js",
+    "start": "node development.js",    
     "server": "node build.js && nodemon production.js",
     "build": "node build.js",
     "clean": "rimraf dist"

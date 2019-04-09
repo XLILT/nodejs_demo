@@ -1,0 +1,293 @@
+#include "DocumentBase.tars"
+module sunlive
+{
+
+// 文件类型
+enum FileType
+{
+    FT_UNKNOWN = -1,
+    FT_DOC = 0,         // 文档
+    FT_IMG = 1,         // 原图
+    FT_THUMB = 2,       // 缩略图
+    FT_FULL_JPG = 3,    // 原尺寸JPG图
+};
+
+// 文件来源
+enum FileSource
+{
+    FS_PEKING = 0,      // 北京的文件系统
+    FS_SFS = 1,         // 武汉SFS
+};
+
+const int FET_UNKNOWN = -1;
+const int FET_DOC = 1;
+const int FET_DOCX = 1;
+const int FET_XLS = 2;
+const int FET_XLSX = 2;
+const int FET_PPT = 3;
+const int FET_PPTX = 3;
+const int FET_PDF = 4;
+const int FET_PNG = 1;
+const int FET_JPG = 3;
+const int FET_JPEG = 4;
+
+const string KEY_ALIAS_NAME = "key_";
+const string KEY_TARGET_NAME = "key";
+
+// SFS limit
+const long MAX_UPLOAD_EXPIRE_SEC = 2592000;
+const long MAX_DOWNLOAD_EXPIRE_SEC = 2592000;
+
+// 文件下载信息
+struct DownloadMeta
+{
+    1  optional int iSize;                   // 文件大小 字节
+    2  optional FileType iType;              // 文件类型 0:文档  1:图片  2:缩略图, 3:原尺寸JPG图
+    3  optional int iExtType;                // 文档/图片对应类型
+    4  optional int iDocId;                  // 文档ID
+    5  optional int iPageId;                 // 图片页ID 文档0
+    6  optional int iPageCount;              // 文档的页数
+    7  optional string sUrl;                 // 下载url
+    8  optional int iWidth;                  // 图片宽
+    9  optional int iHeight;                 // 图片高
+    10 optional string sFileName;            // 文件名
+
+    // -----------------------------------
+    // 以下字段对客户端不可见
+    101 optional long lRoomId;              // 房间id
+    102 optional string sFileHash;          // 文件hash值
+    103 optional FileSource eFileSource;    // 文件来源
+};
+
+// 文件下载地址请求参数
+struct DownloadRequest
+{
+    1 optional int iDocId;                 // 文档ID
+    2 optional int iPageId;                // 图片id, 文档0
+    3 optional long lRoomId;               // 房间ID
+    4 optional long lExpireSeconds = 7200; // 有效期 秒
+    5 optional bool bReturnAll = false;    // 返回房间所有文档信息， 为true忽略docId、pageId字段
+};
+
+// 文件下载地址响应参数
+struct DownloadResponse
+{
+    1 optional vector<DownloadMeta> vFiles; // 下载文件信息
+};
+
+// 删除文件请求
+struct DeleteRequest
+{
+    1 optional int iDocId;   // 文档ID
+    2 optional long lRoomId; // 房间ID
+    3 optional bool bDeleteAll = false; // 删除所有文档， 为true忽略doc
+};
+
+// 删除房间相关缓存
+struct CleanRequest
+{
+    1 optional long lRoomId;
+};
+
+// 上传完成后回调请求
+//struct UploadRequest
+//{
+//    1  optional FileMeta meta;    // 文档信息
+//    2  optional int iDocId;       // 文档Id
+//    3  optional long lRoomId;     // 房间Id
+//    4  optional int iFileSize;    // 文件大小
+//    5  optional int iFileType;    // 文件类型 0:文档 1:图片
+//    6  optional int iFileExtType; // 文件/图片扩展类型
+//    7  optional string sFileName; // 文件名
+//    8  optional string sFileHash; // 文件etag hash
+//    9  optional string sLinkUrl;  // 原始地址
+//    10 optional int iTotalPages;  // 总页数
+//    11 optional int iImageWidth;  // 图片宽
+//    12 optional int iImageHeight; // 图片高
+//    13 optional int iThumbnailSize;       // 缩略图大小
+//    14 optional string sThumbnailHash;    // 缩略图hash
+//    15 optional int iThumbnailImgeWidth;  // 缩略图宽
+//    16 optional int iThumbnailImgeHeight; // 缩略图高
+//    17 optional string sThumbnailLinkUrl; // 缩略图地址
+//};
+
+struct UploadCallbackExtra
+{
+    1 optional string fileUrl;      // 文件下载地址(downloadAuthTimeout有效期)
+    2 optional int imageWidth;      // 图片宽(px)
+    3 optional int imageHeight;     // Integer  图片高(px)
+    4 optional vector<string> thumbnailKey;     // 缩略图的key值
+    5 optional vector<string>  thumbnailHash;   // 缩略图的hash值
+    6 optional vector<long> thumbnailSize;      // 缩略图片大小(bytes)
+    7 optional vector<string> thumbnailUrl;     // 缩略图下载地址(downloadAuthTimeout有效期)
+    8 optional vector<int> thumbnailWidth;      // 缩略图片宽(px)
+    9 optional vector<int> thumbnailHeight;     // 缩略图片高(px)
+};
+
+// SFS回调请求参数
+struct UploadCallbackRequest
+{
+    1 optional string key_;                 // 文件上传的key值, 名字必须为KEY_ALIAS_NAME
+    2 optional long lastModifyDate;         // 文件上传时间,unix时间戳，单位是秒
+    3 optional long contentLength;          // 上传文件的大小，单位字节B
+    4 optional string contentType;          // 文件上传的类型，创建文件夹，则为空字符串
+    5 optional string requestFromCosId;     // 回调文件的唯一标识
+    6 optional string requestSourceIP;      // 上传文件的IP地址，若控制台触发回调，则为控制台服务器地址
+    7 optional string specialParamResult;   // 业务方指定参数的返回json字符串
+};
+
+struct Pages
+{
+    1 optional map<int, long> mPageKeys;            // 页id -> 原图片数据库主键id
+    2 optional map<int, long> mThumbnailPagesKeys;  // 页id -> 缩略图片数据库主键id
+    3 optional map<int, long> mRawJpgKeys;          // 页id -> 原尺寸jpg图片记录id
+};
+
+// 文档的page索引信息
+struct DocPages
+{
+    1 optional long lDbId;      // 数据库记录id
+    2 optional Pages pages;
+};
+
+//struct DocContext
+//{
+//    1 optional long lDocPrimaryKey; // 文档主键
+//    2 optional string sDocName;     // 文档名
+//    3 optional int iTotalPages;     // 总页数
+//};
+
+// ---------------------------------------------------------------
+// SFS associated
+
+// 申请access_token响应
+struct SFSGetTokenReq
+{
+    1 optional string accessKey;    // 业务访问key
+    2 optional string secretKey;    // 业务秘钥key
+    3 optional unsigned int timeout;      // token有效期，单位秒
+};
+
+struct SFSGetTokenData
+{
+    1 optional string accessToken;      // 访问令牌
+    2 optional string appid;            // 业务id
+    3 optional unsigned int expiredTime;        // token过期时间，单位秒
+};
+
+// 申请access_token响应
+struct SFSGetTokenRes
+{
+    1 optional string code;     // 返回code码
+    2 optional string msg;      // 返回信息
+    3 optional SFSGetTokenData data;        // 返回业务对象
+};
+
+// 申请上传url和token请求
+struct SFSUploadReq
+{
+    1 optional string key_;                         // 文件上传的key值, 名字必须为KEY_ALIAS_NAME
+    2 optional unsigned int authTimeout;            // 签名有效时长，单位秒，默认10分钟
+    3 optional unsigned int downloadAuthTimeout;    // 生成对应下载地址的签名有效时长，单位秒
+    4 optional vector<int> thumbnailWidth;          // 缩略图片宽(px)
+    5 optional vector<int> thumbnailHeight;         // 缩略图片高(px)
+    6 optional vector<string> thumbnailSuffix;      // 缩略图后缀 png,jpeg
+};
+
+struct SFSUploadData
+{
+    1 optional string uploadUrl;        // 上传地址
+    2 optional map<string, string> header;      // 签名值，请求时放到header中
+};
+
+// 申请access_token响应
+struct SFSUploadRes
+{
+    1 optional string code;     // 返回code码
+    2 optional string msg;      // 返回信息
+    3 optional SFSUploadData data;        // 返回业务对象
+};
+
+// 申请下载传url请求
+struct SFSDownloadReq
+{
+    1 optional string key_;                 // 文件上传的key值, 名字必须为KEY_ALIAS_NAME
+    2 optional unsigned int authTimeout;    // 签名有效时长，单位秒，默认10分钟
+};
+
+struct SFSDownloadData
+{
+    1 optional string downloadUrl;      // 带签名的下载地址
+};
+
+// 申请下载传url响应
+struct SFSDownloadRes
+{
+    1 optional string code;     // 返回code码
+    2 optional string msg;      // 返回信息
+    3 optional SFSDownloadData data;        // 返回业务对象
+};
+
+// 批量申请下载传url请求
+struct SFSDownloadBatchReq
+{
+    1 optional vector<string> key_;                 // 文件上传的key值, 名字必须为KEY_ALIAS_NAME
+    2 optional unsigned int authTimeout;    // 签名有效时长，单位秒，默认10分钟
+};
+
+// 批量申请下载传url响应
+struct SFSDownloadBatchRes
+{
+    1 optional string code;     // 返回code码
+    2 optional string msg;      // 返回信息
+    3 optional vector<string> data;        // 返回业务对象
+};
+// --------------------------------------------------------
+
+interface Document
+{
+    /**
+    * 上传成功后回调请求
+    * @param request : 上传成功信息
+    *
+    * @return : 返回值详见错误码定义
+    */
+    int uploadCallback(UploadCallbackRequest request);
+
+    /**
+    * 获取文档下载地址
+    * @param request : 上传的文档信息
+    * @param out response : 下载信息
+    *
+    * @return : 返回值详见错误码定义
+    */
+    int download(DownloadRequest request, out DownloadResponse response);
+
+    /**
+    * 请求上传Token
+    * @param request : 请求上传的文档信息
+    * @param out response : 上传文档对应的token
+    *
+    * @return : 返回值详见错误码定义
+    */
+    int getUploadToken(TokenRequest request, out TokenResponse response);
+
+    /**
+    * 删除文档
+    * @param request : 删除的文档信息
+    *
+    * @return : 返回值详见错误码定义
+    */
+    int deleteFile(DeleteRequest request);
+
+    /**
+    * 清除临时数据
+    * @param request : 房间id
+    *
+    * @return : 返回值详见错误码定义
+    */
+    int clean(CleanRequest request);
+};
+
+};
+

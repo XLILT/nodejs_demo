@@ -1,0 +1,58 @@
+// 文档服务对外基础数据结构
+module sunlive
+{
+    ///////////////
+    // Token Request
+    struct FileMeta
+    {
+        1 optional int iPageId;              // 图片页ID 文档0
+        2 optional string sFileHash;         // 文件hash  md5算法
+        3 optional int iWidth;               // 图片宽(px)
+        4 optional int iHeight;              // 图片高(px)
+        5 optional int iQuestionId;          // 试题ID
+    };
+
+    // 客户端请求上传地址请求
+    struct TokenRequest
+    {
+        1 optional int iDocId;                 // 文档ID
+        2 optional long lRoomId;               // 房间ID
+        3 optional int iPageCount;             // 文档总页数
+        4 optional string sFileName;           // 文档名
+        5 optional vector<FileMeta> vFiles;    // 请求上传文件信息
+        6 optional string sImgSuffix = "png";  // 上传图片文件名后缀
+        7 optional unsigned int iPaperId;      // 随堂考ID，表示请求随堂考上传Token
+
+        // 以上为客户端填充内容
+        // ---------------------------------------------------------
+        // 以下为服务端填充内容
+
+        101 optional long lExpireSeconds = 1800;                // 上传地址有效期 秒
+        102 optional long lDownloadExpireSeconds = 2592000;     // 预生成的下载地址有效时间，单位秒
+    };
+
+    enum BodyFormat
+    {
+        BF_RAW = 1,     // body内容直接填充文件字节流
+        BF_FORM = 2,    // body内容为form表单
+    };
+
+    ////////////////
+    // Token Response
+    struct FileToken
+    {
+        1 optional int iPageId;                         // 图片页ID 文档0
+        2 optional bool bNeedUpload = true;             // 是否需要上传, 秒传成功为false 则token为空
+        3 optional string sUploadURL;                   // 上传的完整url
+        4 optional string sMethod = "PUT";              // HTTP请求方法
+        5 optional map<string, string> mHeader;         // HTTP头内容
+        6 optional BodyFormat eBodyFormat = BF_RAW;     // body格式
+    };
+
+    struct TokenResponse
+    {
+        1 optional int iDocId;                  // 文档ID
+        2 optional vector<FileToken> vTokens;   // 上传的token
+        3 optional int iCode;                   // 获取token的结果
+    };
+};
