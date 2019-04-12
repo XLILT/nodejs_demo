@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "cross-env PORT=3333 forever start ./bin/www",
     "be_dev": "cross-env DEBUG=issuse-feedback:* nodemon ./bin/www",
     "fe_dev": "node fe/development",
     "fe_deploy": "node fe/build && node fe/deploy",

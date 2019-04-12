@@ -4,7 +4,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 //import { LocaleProvider, Form, Icon, Input, Button, Checkbox } from 'antd';
 //import { LocaleProvider, DatePicker, message } from 'antd';
-import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
+import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col,
+  Checkbox, Button, AutoComplete, message } from 'antd';
 import axios from 'axios';
 
 // 由于 antd 组件的默认文案是英文，所以需要修改为中文
@@ -24,6 +25,7 @@ class FeedbackForm extends React.Component {
 
       this.state = {
         teach_courses: {},
+        rid_course: {},
         teach_options: [],
         course_options: [],
         rid: 0
@@ -34,9 +36,12 @@ class FeedbackForm extends React.Component {
         url: '/courses'
       }).then(res => {
         let tcmap = {}
+        let rcmap = {}
         let toarr = []
 
         res.data.forEach(c => {
+          rcmap[c.rid] = c.rname
+
           if( tcmap[c.tname] ) {
             tcmap[c.tname].append(c)
           } else {
@@ -48,6 +53,7 @@ class FeedbackForm extends React.Component {
 
         this.setState({
           teach_courses: tcmap,
+          rid_course: rcmap,
           teach_options: toarr
         })
       })
@@ -57,13 +63,24 @@ class FeedbackForm extends React.Component {
     e.preventDefault()
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if ( !err ) {
+      if ( !err ) {        
         values.rid = this.state.rid
+        values.course = this.state.rid_course[this.state.rid]
 
         axios({
           method: 'post',
           url: '/feedback',
           data: values
+        }).then(res => {
+          if (res.status === 200) {
+            message.success('提交成功, 感谢参与反馈')
+          } else {
+            message.error('提交失败，请稍后重试')
+          }          
+        }).catch(err => {
+          message.error('提交失败，请稍后重试')
+
+          console.log(err)
         })
       }
     })
@@ -83,7 +100,7 @@ class FeedbackForm extends React.Component {
     })
   }
 
-  handleCourseChange = v => {
+  handleCourseChange = v => {    
     this.setState({
       rid: v
     })
@@ -122,9 +139,14 @@ class FeedbackForm extends React.Component {
           {getFieldDecorator('nick')(<Input />)}
         </FormItem>        
         <FormItem {...formItemLayout} label='讲师姓名'>
-          <Select placeholder='选择讲师' onChange={this.handleTeacherChange}>
-            {this.state.teach_options}
-          </Select>
+          {getFieldDecorator('teacher', {
+              rules: [{ required: true }]
+            })(
+              <Select placeholder='选择讲师' onChange={this.handleTeacherChange}>
+                {this.state.teach_options}
+              </Select>
+            )
+          }
         </FormItem>
         <FormItem {...formItemLayout} label='课程名'>
           {getFieldDecorator('course', {
