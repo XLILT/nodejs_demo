@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "be_dev": "cross-env DEBUG=issuse-feedback:* nodemon ./bin/www",
     "fe_dev": "node fe/development",
-    "dev": "node fe/build && npx copy fe/dist/* public/ && npx opn http://localhost:3000 && node ./bin/www",
+    "fe_deploy": "node fe/build && node fe/deploy",
     "migrate": "node ./bin/migrate"
   },
   "dependencies": {
