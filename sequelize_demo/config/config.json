@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "tars",
+    "password": "tars2015",
+    "database": "feedback_dev",
+    "host": "172.16.116.50",
+    "port": 3307,
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "tars",
+    "password": "tars2015",
+    "database": "feedback_test",
+    "host": "172.16.116.50",
+    "port": 3307,
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "tars",
+    "password": "tars2015",
+    "database": "feedback_prod",
+    "host": "172.16.116.50",
+    "port": 3307,
+    "dialect": "mysql"
+  }
+}

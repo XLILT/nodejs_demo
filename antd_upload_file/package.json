@@ -1,12 +1,12 @@
 {
-  "name": "antd_demo",
+  "name": "antd_upload_file",
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
     "start": "node development.js",
     "server": "node production.js",
-    "build": "node build.js && copy fe/dist/* public",
+    "build": "node build.js",
     "clean": "rimraf dist"
   },
   "devDependencies": {
@@ -31,7 +31,6 @@
     "webpack": "^4.7.0",
     "webpack-dev-server": "^3.1.4",
     "webpack-merge": "^4.1.2",
-    "uglifyjs-webpack-plugin": "^2.1.2",
     "xml-loader": "^1.2.1"
   },
   "dependencies": {
